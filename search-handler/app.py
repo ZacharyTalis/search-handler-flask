@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import Flask, request, redirect, send_file
+from urllib import parse
 from waitress import serve
 
 app = Flask(__name__)
@@ -10,13 +11,13 @@ def main():
 
     # Get URL args
     url = request.args.get("url", "")
-    rawSubs = request.args.get("subs", "").split(",")
+    rawSubs = parse.unquote(request.args.get("subs", "")).split(",")
     subs = {}
 
     try:
         # Split rawSubs into a dictionary
         for rawSub in rawSubs:
-            rawSub = rawSub.split(":")
+            rawSub = rawSub.split("~")
             subs[rawSub[0]] = rawSub[1]
         # Perform URL subs
         for sub in subs.keys():
@@ -25,6 +26,9 @@ def main():
         # Request malformed or missing args
         return ("Request malformed or missing args!", 400)
 
+    print(rawSubs)
+    print(subs)
+    print(url)
     return redirect(url, code=303)
 
 @app.route("/.well-known/gpc.json")
