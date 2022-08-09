@@ -9,6 +9,10 @@ app = Flask(__name__)
 @app.route("/")
 def main():
 
+    # If no URL args, return a non-error page
+    if (len(request.args.keys()) == 0):
+        return ("<a href='https://github.com/ZacharyTalis/search-handler-flask/'>search-handler-flask</a>", 200)
+
     # Get URL args
     url = request.args.get("url", "")
     rawSubs = parse.unquote(request.args.get("subs", "")).split(",")
